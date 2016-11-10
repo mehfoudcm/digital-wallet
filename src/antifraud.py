@@ -193,7 +193,7 @@ for row in fraudulentset:
         totaloutput.append('trusted')
     else:
         totaloutput.append('unverified')
-output4f = open('output4.txt', 'w')
+output4f = open('paymo_output/output4.txt', 'w')
 for item in totaloutput:
     print>>output4f, item
 output4f.close()
