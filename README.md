@@ -1,3 +1,16 @@
-# digital-wallet
+# Introduction
+Thousands of digital wallet transactions occur every second for Paymo, and these methods have become an easy and quick way to distribute funds. Because it is so accessible it has also become a focus for criminal minded users to steal money via fraudulent transactions/requests for payments. For this challenge, I have built an algorithm that helps indicate possible fraudulent interactions and will allow Paymo to notify payers if their transaction is suspect. 
+
+Overall, the algorithm is built in python, and majority of the runtime deals with building and understanding the historical transaction information. Within Paymo, and with more time, more effort should be focused on analyzing this information, and possibly building models to establish parameters that could be useful to the algorithm that handles streaming payments. 
+
+The algorithm contains five features that verifies transactions that are sent through as a group of payments. The first three features pertain to the connectivity of people making transactions. In order to understand the connectivity of the users and history of transactions, we will break down a network and the method of the algorithm. 
+
+Networks, and social networks, are graphs of connections, or edges, between people, or nodes, where paths and properties about paths exist and can tell us about the inter-connectivity and other characteristics of the graph and people in it. In this case, the history of transactions, represented by the batch of payments indicates a system of payers and receivers as nodes, and edges as the transactions between them. If we list these edges with equal weights (let us set this equal to one), then everywhere there is a shortest path with the length of one, there is a direct connection between nodes, or users. In other words, if the two users have previously made a transaction, then they will be direct connections, or have the minimum length of the network. By using a package that builds a network and a function that follows through a breadth-first-search algorithm like Dijkstra's algorithm, we captured the shortest distance from one user to another in a non-directional graph. (Dijkstra's algorithm goes through each node only adding the lowest cost path until it completes the route from the source, origin or payer, to sink, destination or receiver.)
+
+#Features 1 through 3
+
+This algorithm is not the most efficient way to find out if two nodes are connected; however, if we are to implement the following two features, we should not take short cuts early. The first feature finds only where the shortest path between two nodes is one, and the second feature finds only where the shortest path between two nodes is one or two. Likewise, the third feature follows through with the same logic; where the length of the shortest path between two users is four or less (but at least one), the transaction will be verified. When the shortest path is two, that means there is a user that connects two edges to the two users. Likewise, when the paths are three and four, there are two and three users along the path of previous transactions between the two users of focus. This establishes the first three features and creates the three original output files as requested. The following depicts the distribution from the main streamed payments file requested for input.
+
+
 
 <img src="./images/friend-of-a-friend1.png" width="500">
