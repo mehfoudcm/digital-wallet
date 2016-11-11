@@ -13,4 +13,18 @@ This algorithm is not the most efficient way to find out if two nodes are connec
 
 
 
-<img src="./images/friend-of-a-friend1.png" width="500">
+<img src="./images/degree1.png" width="800">
+
+#Messages
+
+The messages come from real Venmo transactions. These can be incredibly interesting and a lot of fun to read. My first assumption was that using these to detect fraud alone would not be helpful, because if I were acting fraudulently, I would try not to let my messages indicate this. While I cannot assume the intelligence of the fraudsters in the network, I do not believe that specific words or phrases alone can help detect fraud. Also, when discussing fraud here, I am referring to hacking methods of forcing payments from unaware users, and not money laundering, although the logic for both is consistent in many instances.
+
+First, I believe that there are too many possible messages that could mean even more things. For example, with the plethora of emojis available and meanings behind those emojis, one should not be penalized by sending an emoji. 
+
+Second, studying the distribution of the messages, the four most popular messages are "Food", "Uber", the pizza emoji, and the beer emoji. Using personal biases, I feel that these messages would be the most likely that I would use to distribute money via a digital wallet.
+
+The third and final reason for not using the messages to determine fraud is that after a quick analysis of over a million payments, the distributions did not change for the most frequent payment recipients. In other words, after looking at the ten most frequent payment receivers (assuming, again, that id1 was sending money to id2), the distribution used carried the same distribution of messages used. This is seen in the graph below, the blue line is the distribution of the 40 most popular messages, and the red line is the distribution of the 40 most popular messages by the top ten most frequent users. This tells me that these elements of the data were fabricated, or that the fraudulent users hid their messages very well. In either case, I do not believe that messages could be used alone to detect fraud. The distribution of users with how it pertains to fraud will be mentioned later, but the user does not have control over their user identification, so it is different. Again, here, we will assume that even though the payer typically controls the message, in fraudulent transactions (where the payer is not in control), the receiver would probably insert this for the payer as a request for the money.
+
+<img src="./images/messages.png" width="800">
+
+It is also worth noting that the distribution of the real messages was duplicated, such that it keeps the same distribution but does not help one depict fraud. For example, it seems improbable that six different users established transactions with an independent set of six additional users all for the mission of feeding Tom after his Austin trip by saying, ``Groceries - hangry tom will have food to eat when he comes home from his Austin trip :)". I enjoy the addition of messages, and it complicates, slightly, the cleaning of the data, but for our purposes, extracting or interpreting fraud via message alone is not the best method.
