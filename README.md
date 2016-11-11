@@ -50,3 +50,35 @@ In an initial overview of the receivers of payments (or id2), we observed users 
 For the algorithm, we built in this feature by counting the number of payments that each user receives in a specific stream and divides by the number of seconds in that stream. We established a cap of 1 transaction per second. When testing 3 second, 10 second, and 30 second streams, we see a percentage cut off of 1-3\% of the transactions. When these identification numbers are approved as businesses, then this number will drop quickly as a low number of users are responsible for a large number of these transactions. 
 
 Now, it might be advantageous, as a fraudulent user, to set up multiple accounts; but assuming Paymo has address, bank, and other personal information, this type of fraud can be detected on these levels, and will be ignored for this challenge.
+
+#Conclusion
+
+The additional features introducing caps for numbers of transactions per second per user and amounts for each transaction only reduce the verified cluster by about two percent each, which can be shifted dependent on the desires of Paymo. With adjustments, Paymo can shift the notification rate to their desired output, or even to the desired output of the standard every day or business customer. In the graph that follows, the first three bars will be fixed based on historical data, but with model fluctuations, the fourth bar can move up or down based on how strict the inputs are.
+
+<img src="./images/percentgraph.png" width="800">
+
+Currently, the algorithms have these features built in, and even produces the price cap itself. And these five features all together should give Paymo confidence in detecting fraudulent transactions. As we see below, for each of the first three features that are added, the number of notifications sent decreases. When the two additional features are included, more "fraud" is detected, but the increase in notifications sent is not dramatic. This can be seen below.
+
+<img src="./images/notifications.png" width="800">
+
+It is worth repeating that the features are efficient if they come in by batches with the network already loaded. Assuming the network continues to build, caps can be placed on the time exhausted by Dijkstra's algorithm, if we are not concerned about the difference between users who are not connected closely and users who are not connected at all. Further models can be built on message, identification, time, and amounts to further refine the understanding of what is fraudulent. These can be cooked into the algorithm so that the process can be made more efficient. Unfortunately, these statistical methods take resources to build in, refine, and implement.
+
+Together, the code takes the most time to build the network on historical transactions, and then run through the network, but the time to actually score each transaction is minuscule if the system can be pre-built and loaded. 
+
+#Coding Comments
+
+Learning Python and building the code, I wanted to stick to my roots of analytics. For this reason, I decided to add the extra steps to print and save clean tables. Along with this philosophy, I come from a database driven background, so rather than looping through the table twice to establish counts for each, I used a left join, or merge. In order to do these things, I imported the pandas package. 
+
+In order to run array operations I imported numpy. I used arrays to build a network. Coming from an optimization background, I feel that the most efficient way to comprehend the degree-of-friends reached to make a payment is the utilization of uniform weights across a node network. I imported networkx and established users as nodes and their transactions as edges. To understand the degree-of-friends, I measured the length of the shortest path from payer to receiver (undirected for this code). I used the simple shortest_path, since all of the lengths are uniform, the quick breadth-first search would be sufficient (similar to Dijkstra's algorithm with this parameter, but faster knowing that). Rather than run through each feature individually (the first would have been much quicker without a network, especially if I were using a database method join or merge), I calculated them all the same for the sake of exporting to statistical model building and understanding. This also could be done with a cutoff after the 4th degree friend, because there is technically no difference to 5th degree, 8th degree, and 0th degree friends with respect to verification. However, for Paymo's benefit, I ran through completely at once, without cutoffs.
+
+I also imported csv, time, and shutil for import and output capabilities.
+
+Included in the src folder are 4 files. First, there's the antifraud.py file which (on my machine at least) passes the tests that I ran using run_tests.sh and run.sh. This is a cleaned version of allfeaturesUIOutput.py, which ask the user for input and can provide a printed output, as well as times each step of the process.
+
+The last two files are batchbasesetup.py and streampaymentrun.py. These files breakdown what I feel would be the most logical sense. There is time spent building the clean history file and writing it to a csv as well as time to build the network and even the simple price model. These can be done in the base, separate from any streamed payments.
+
+Once this has been completed, the streampaymentrun.py file can be run whenever stream_payment files come in, an epitomized mock of real-time streaming API. This file works only off of the stream_payment.csv file but requires the loading of the network and price. All files are essentially the same, showing all 5 features.
+
+Other notes: batch_payment.txt and stream_payment.txt were too large for the additional test folder that I created, so it has been left out. newpayment1 and paymentlist1.csv files are created for the purpose of additional statistical study. output4.csv is created as the combination and output.txt is the full database with features and degree calculation. This table was useful in building tables and understanding. Since the additional scripts were built earlier and not thoroughly cleaned, adjustment to the directories or file names might be necessary (at most), antifraud.py is good to go.
+
+In conclusion, thank you very much for the opportunity to participate in this interesting problem, and if there are any questions unanswered, please feel free to reach out to me with questions!
