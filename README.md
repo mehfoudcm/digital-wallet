@@ -15,7 +15,7 @@ This algorithm is not the most efficient way to find out if two nodes are connec
 
 <img src="./images/degree1.png" width="800">
 
-#Messages
+#Messages (No Feature for now)
 
 The messages come from real Venmo transactions. These can be incredibly interesting and a lot of fun to read. My first assumption was that using these to detect fraud alone would not be helpful, because if I were acting fraudulently, I would try not to let my messages indicate this. While I cannot assume the intelligence of the fraudsters in the network, I do not believe that specific words or phrases alone can help detect fraud. Also, when discussing fraud here, I am referring to hacking methods of forcing payments from unaware users, and not money laundering, although the logic for both is consistent in many instances.
 
@@ -29,7 +29,7 @@ The third and final reason for not using the messages to determine fraud is that
 
 It is also worth noting that the distribution of the real messages was duplicated, such that it keeps the same distribution but does not help one depict fraud. For example, it seems improbable that six different users established transactions with an independent set of six additional users all for the mission of feeding Tom after his Austin trip by saying, "Groceries - hangry tom will have food to eat when he comes home from his Austin trip :)". I enjoy the addition of messages, and it complicates, slightly, the cleaning of the data, but for our purposes, extracting or interpreting fraud via message alone is not the best method.
 
-#Amounts
+#Amounts (Feature 4)
 
 The initial analysis of amounts in order to determine fraud produced a few reasons as to why looking in this direction might not be the most telling strategy, at least with the data presented. First, the distribution of amounts is a nearly perfect normal distribution. The mean and median are extremely close, the tail is not as long as one might expect, and a Shapiro-Wilk test of normality even expresses the amounts as a normal distribution. I would have expected these values to be skewed to the left slightly as well, and follow Benford's law of the probabilities of leading values more closely. I have included a visualization of the distribution below. The biggest hint that these numbers in general were made up is that the distributions of amount values ending in whole dollars is about 1\%, which would only be the case if all cent values from .01 to .99 were represented evenly. I would bet that most customers would pay in whole dollar amounts. 
 
@@ -38,3 +38,15 @@ The initial analysis of amounts in order to determine fraud produced a few reaso
 However, the amounts in themselves can help distinguish fraudulent users. We would expect fraudulent transactions to contain larger values, or a lot of smaller transactions (which we will discuss later). By using simple z-scores, we can pull out the top 2\% of transactions assuming that the cost to a user is minimal to ensure they meant to make such a large transaction. 
 
 Even if Paymo's transactions do not follow this normal distribution, using a simple z-score to establish a fraudulent price cap will be helpful for all users. In the algorithm, the first additional feature calculates the standard deviation and mean from a sample of the batch payments. This number can be continuously refined to enhance the price cap. This value is then compared to all streaming payments. If the streamed, or new, payment is greater than that price cap, then the transaction will be flagged as untrusted. The price cap creation can be adjusted by Paymo, but for the code here, it will be represented as two standard deviations added to the mean. In a normal distribution, this cuts out only about 2\% of the transactions. The main design of this additional feature is the hope that any outlier (on the high side) will be flagged immediately, because while it could be fraud, it could also be a devastating typo or added zero.
+
+#User/Id's (Feature 5)
+
+If I were to force payments to my account, in a fraudulent manner, or attempt to launder money using this digital wallet, I would like to be able to extract or transfer large amounts of money. However, in order to avoid obvious suspicions, I would probably make a lot of smaller transactions. If the algorithm presents a feature for picking out outlying amounts, it should also pick out outlying users. 
+
+In an initial overview of the receivers of payments (or id2), we observed users that would receive over 3,000 payments in less than one hour. A specific distribution of the streamed payments below shows that some users even received over 8,500 payments in a time frame of less than 2.5 hours. Again, reflecting my own biases, I cannot imagine having more than 1 transaction during that time frame. However, there is the possibility of businesses using the digital wallet to collect payments. In these cases, the identification number will be known and can be excused as the model evolves.
+
+<img src="./images/counts1.png" width="800">
+
+For the algorithm, we built in this feature by counting the number of payments that each user receives in a specific stream and divides by the number of seconds in that stream. We established a cap of 1 transaction per second. When testing 3 second, 10 second, and 30 second streams, we see a percentage cut off of 1-3\% of the transactions. When these identification numbers are approved as businesses, then this number will drop quickly as a low number of users are responsible for a large number of these transactions. 
+
+Now, it might be advantageous, as a fraudulent user, to set up multiple accounts; but assuming Paymo has address, bank, and other personal information, this type of fraud can be detected on these levels, and will be ignored for this challenge.
